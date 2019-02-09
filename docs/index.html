@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Someone forgot to change the title</title>
+    <style type="text/css">
+    body{
+        margin:40px auto;
+        max-width:650px;
+        line-height:1.6;
+        font-size:18px;
+        background-color:#111;
+        color:#EEE;
+        padding:0 10px
+    }
+    h1,h2,h3{line-height:1.2}
+    #data-display {
+        background-color: inherit;
+        color: inherit;
+    }
+    #data-display::placeholder {
+        color: #CCC;
+    }
+    </style>
+</head>
+<body>
+    <!--
+        How to use this template:
+        1. Change the title to something meaningful for your project
+        2. 
+    -->
+    <h2>Data</h2>
+    <textarea id="data-display" placeholder="No data yet."></textarea>
+    
+    <h3>Data controls</h3>
+    <label for="data-file"> Select file </label>
+    <input type="file" id="data-file" />
+    
+<script>(() => {
+
+const display = document.getElementById("data-display");
+const fileInput = document.getElementById("data-file");
+const onFile = () => {
+    const file = fileInput.files[0];
+    
+    display.innerText = file.size + " bytes";
+};
+
+fileInput.addEventListener("change", onFile);
+
+})()</script>
+</body>
+</html>
