@@ -44,7 +44,7 @@ const fileInput = document.getElementById("data-file");
 const onFile = () => {
     const file = fileInput.files[0];
     
-    display.innerText = file.size + " bytes";
+    display.value = file.size + " bytes";
 };
 
 fileInput.addEventListener("change", onFile);
