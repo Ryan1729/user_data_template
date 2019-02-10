@@ -28,27 +28,120 @@
     <!--
         How to use this template:
         1. Change the title to something meaningful for your project
-        2. 
-    -->
+        2. Look at the `// Example usage code` below. Rip out what you don't want.
+        3. use `userData.save` and `userData.load` to set and get the user data as a string.
+    -->    
+<script>
+const initUserData = (downloadFileName = "data.txt", storageKey = "data-storage-key") => {
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.style.display = "none";
+    document.body.appendChild(fileInput);
+
+    const listeners = [];
+    
+    const addListener = (f) => {
+        listeners.push(f);
+    };
+    
+    const save = (dataString) => {
+        listeners.forEach(l => l(dataString, "save"));
+    
+        localStorage[storageKey] = dataString;
+    };
+    
+    const getData = () => localStorage[storageKey] || "";
+    
+    const load = () => {
+        const dataString = getData();
+        
+        listeners.forEach(l => l(dataString, "load"));
+    
+        return dataString;
+    };
+    
+    const onDownload = () => {
+        const dataString = getData();
+        
+        listeners.forEach(l => l(dataString, "onDownload"));
+        
+        const blob = new Blob([dataString], {
+            type: "text/plain;charset=utf-8;",
+        });
+    
+        var link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = downloadFileName;        
+        document.body.appendChild(link);
+        link.click();        
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    };
+    
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+        const dataString = e.target.result;
+        
+        listeners.forEach(l => l(dataString, "onUpload"));
+        
+        localStorage[storageKey] = dataString;
+    };
+    
+    const onUpload = () => {
+        fileInput.click();
+        const file = fileInput.files[0];
+        if (!file) {
+            return;
+        }
+        
+        reader.readAsText(file);
+    };
+
+    return {
+        save,
+        load,
+        onDownload,
+        onUpload,
+        addListener
+    }
+};
+</script>
     <h2>Data</h2>
     <textarea id="data-display" placeholder="No data yet."></textarea>
     
     <h3>Data controls</h3>
-    <label for="data-file"> Select file </label>
-    <input type="file" id="data-file" />
-    
-<script>(() => {
+    <button id="data-download"> Download </button>
+    <button id="data-upload"> Upload </button>
 
+<script>
+// Example usage
+(() => {
+//`initUserData` is the sole "export" the user data script tag.
+const userData = initUserData();
 const display = document.getElementById("data-display");
-const fileInput = document.getElementById("data-file");
-const onFile = () => {
-    const file = fileInput.files[0];
-    
-    display.value = file.size + " bytes";
-};
 
-fileInput.addEventListener("change", onFile);
+userData.addListener((dataString, kind) => {
+    switch(kind) {
+        case "onDownload": 
+            console.log("user downloaded :");
+            console.log(dataString);
+        break;
+        
+        case "onUpload": 
+            console.log("user uploaded :");
+            console.log(dataString);
+            
+            display.value = dataString;
+        break;
+    }
+});
 
+const download = document.getElementById("data-download");
+download.addEventListener("click", userData.onDownload);
+
+const upload = document.getElementById("data-upload");
+upload.addEventListener("click", userData.onUpload);
 })()</script>
 </body>
 </html>
