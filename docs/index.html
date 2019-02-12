@@ -15,6 +15,8 @@
         padding:0 10px
     }
     h1,h2,h3{line-height:1.2}
+    </style>
+    <style type="text/css">
     #data-display {
         background-color: inherit;
         color: inherit;
@@ -22,6 +24,33 @@
     #data-display::placeholder {
         color: #CCC;
     }
+    
+    #data-menu {
+        max-width: 300px;
+    }
+    #data-menu-checkbox {
+        display: none;
+    }    
+    #data-menu-content {
+        height: 0;
+        overflow: hidden;
+        padding-left: 25px;
+        transition: all 0.5s ease;
+    }
+    #data-menu-checkbox:checked ~ #data-menu-content {
+        /* Percentage won't animate properly (despite it being in the spec.) */
+        height: 50px; 
+    }
+    #data-menu-checkbox:checked ~ label #data-menu-image {
+        transform: rotateZ(90deg);
+    }
+    #data-menu-image {
+        transition: all 0.5s ease;
+        float: left;
+        margin-top: 0.25em;
+        margin-right: 0.5em;
+    }
+    
     </style>
 </head>
 <body>
@@ -110,10 +139,17 @@ const initUserData = (downloadFileName = "data.txt", storageKey = "data-storage-
     <h2>Data</h2>
     <textarea id="data-display" placeholder="No data yet."></textarea>
     
-    <h3>Data controls</h3>
-    <button id="data-download"> Download </button>
-    <button id="data-upload"> Upload </button>
-
+    <div id="data-menu">
+        <input type="checkbox" id="data-menu-checkbox">
+        <label for="data-menu-checkbox">
+            <img id="data-menu-image" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAABlBMVEUAAADu7u6BVFV4AAAAAXRSTlMAQObYZgAAAC5JREFUCNdj4GBg4GFg4GNg4GdgYG9gYD7AwPiAgeEDCAEZQC5QkB+sAKiMgwEAm5wGmSr/IG0AAAAASUVORK5CYII="/>
+            <h3>Data controls</h3>
+        </label>
+        <div id="data-menu-content">
+            <button id="data-download"> Download </button>
+            <button id="data-upload"> Upload </button>
+        </div>
+    </div>
 <script>
 // Example usage
 (() => {
